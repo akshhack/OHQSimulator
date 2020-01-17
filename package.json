@@ -1,0 +1,19 @@
+{
+  "name": "ohqsimulator",
+  "version": "1.0.0",
+  "description": "Simulator for Office Hours Queue to study FIFO vs AMORT vs C&T",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akshhack/OHQSimulator.git"
+  },
+  "author": "Akshat Prakash",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akshhack/OHQSimulator/issues"
+  },
+  "homepage": "https://github.com/akshhack/OHQSimulator#readme"
+}
