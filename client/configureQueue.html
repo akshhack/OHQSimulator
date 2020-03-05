@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Queue Configuration</title>
+</head>
+<body>
+    <header>
+        <h1>
+            Configure Queue
+        </h1>
+    </header>
+    <form id="form">
+        <label for="num_tas">Enter number of TAs:</label><br>
+        <input type="number" id="num_tas" name="num_tas" onchange="createTAFields(this.value)"><br>
+        <br>
+        <div id="ta_fields">
+        </div>
+        <br>
+        <label for="inter_arrival_time">Enter inter-arrival time:</label><br>
+        <input type="number" id="inter_arrival_time" name="inter_arrival_time"><br>
+        <input type="submit">
+    </form>
+</body>
+<script src="configureQueueHandler.js"></script>
+<script src="../server/generateSimulation.js"></script>
+</html>
