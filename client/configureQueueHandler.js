@@ -32,7 +32,7 @@ function createTAFields(numTas) {
 
 document.getElementById("form").addEventListener("submit", (event) => {
     event.preventDefault();
-    let numTas = document.getElementById("num_tas").value;
+    let numTas = Number(document.getElementById("num_tas").value);
     let form = new FormData(document.getElementById("form"));
     let myBody = {};
     myBody["numTas"] = numTas;

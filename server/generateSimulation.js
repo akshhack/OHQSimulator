@@ -12,23 +12,24 @@ let simulate = (numTas, mean_inter_arrival_time, alphas, lambdas) => {
         T = T - mean_inter_arrival_time * Math.log(Math.random());
         arrival_times = arrival_times.concat(T);
 
-        let nFree = 0;
+        let nFree = -1;
         for (let i = 0; i < A.length; i += 1) {
             if (A[i] < T) {
-                nFree += 1;
+                nFree = i;
+                break;
             }
         }
 
         let u = 0;
 
-        if (nFree === 0) {
+        if (nFree === -1) {
             for (let v = 0; v < numTas; v += 1) {
                 if (A[v] < A[u]) {
                     u = v;
                 }
             }
 
-            if (A[u] - T > 15) {
+            if (A[u] - T > 30) {
                 start_times = start_times.concat(T + 15);
                 finish_times = finish_times.concat(T + 15);
                 u = -1;
@@ -36,10 +37,13 @@ let simulate = (numTas, mean_inter_arrival_time, alphas, lambdas) => {
                 start_times = start_times.concat(A[u]);
             }
         } else {
-            u = Math.floor(Math.random() * numTas);
+            u = nFree;
             while (A[u] > T) {
-                u = Math.floor(Math.random() * numTas);
+                // u = Math.floor(Math.random() * numTas);
+                u = (u + 1) % numTas;
+                console.log("u value: " + u);
             }
+            console.log("Chosen server is: " + u);
             start_times = start_times.concat(T);
         }
 
