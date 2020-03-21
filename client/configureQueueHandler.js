@@ -1,3 +1,5 @@
+const SIMULATION_URL = 'http://localhost:3001/doSimulation';
+
 function createTAFields(numTas) {
     console.log(numTas);
     let ta_fields_container = document.getElementById("ta_fields");
@@ -40,15 +42,14 @@ document.getElementById("form").addEventListener("submit", (event) => {
     let alphas = [];
     let lambdas = [];
     for (let i = 0; i < numTas; i += 1) {
-        alphas = alphas.concat(Number(document.getElementById("ta_alpha" + i).value));
-        lambdas = lambdas.concat(Number(document.getElementById("ta_lambda" + i).value));
+        alphas.push(Number(document.getElementById("ta_alpha" + i).value));
+        lambdas.push(Number(document.getElementById("ta_lambda" + i).value));
     }
     myBody["alphas"] = alphas;
     myBody["lambdas"] = lambdas;
-    console.log(myBody);
 
     const userAction = async () => {
-        const response = await fetch('http://localhost:3001/doSimulation', {
+        await fetch(SIMULATION_URL, {
             method: 'POST',
             body: JSON.stringify(myBody), // string or object
             headers: {
@@ -57,7 +58,6 @@ document.getElementById("form").addEventListener("submit", (event) => {
         });
     };
     userAction().then(() => {
-        console.log("done");
         window.location.href = 'visualizer.html';
     });
 });

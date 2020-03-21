@@ -1,3 +1,5 @@
+const SIMULATION_DATA_URL = 'http://localhost:3001/getSimulationData'
+
 let numTas = 0;
 let arrival_times = [];
 let start_times = [];
@@ -14,10 +16,9 @@ function setup() {
     canvas.parent('sketch_holder');
 
     // get data
-    fetch("http://localhost:3001/getSimulationData")
+    fetch(SIMULATION_DATA_URL)
         .then((data) => data.json())
         .then((data) => {
-            console.log(data);
             numTas = data.numTas;
             arrival_times = data.arrival_times;
             start_times = data.start_times;
@@ -25,9 +26,7 @@ function setup() {
             assigned_servers = data.assigned_servers;
 
             let tas = {};
-            for (let i = 0; i < numTas; i += 1) {
-                tas[i] = new TA(i + 1);
-            }
+            new Array(numTas).fill(0).map((_, i) => tas[i] = new TA(i + 1));
             ohQueue = new OHQueue(tas);
 
             for (let i = 0; i < start_times.length; i += 1) {
@@ -60,7 +59,7 @@ function setup() {
                     }, finish_time * 200);
                 };
 
-                execs = execs.concat(arrival_time_func, start_time_func, finish_time_func);
+                execs.push(arrival_time_func, start_time_func, finish_time_func);
             }
 
             execs.map((x) => {
@@ -125,7 +124,6 @@ class OHQueue {
     };
 
     show = () => {
-        console.log("showing queue");
         clear();
         background(133, 195, 242);
         translate(50, 50);
@@ -137,19 +135,10 @@ class OHQueue {
         text('queue', 0, 0, 100, 80);
 
         // display students in queue
+        this.students.map((student, i) => student.show(200 * (i + 1), 40));
 
-        for (let i = 0; i < this.students.length; i += 1) {
-            let student = this.students[i];
-            console.log("Showing student " + student + " in queue");
-            student.show(200 * (i + 1), 40);
-        }
         // display each TA and their student status [RED - WAITING, YELLOW - ASSIGNED TO TA, GREEN - COMPLETED]
-        let counter = 0;
-        for (let key in this.tas) {
-            let ta = this.tas[key];
-            ta.show(200 * (counter + 1), 200);
-            counter += 1;
-        }
+        Object.keys(this.tas).map((ta, i) => this.tas[ta].show(200 * (i + 1), 200));
 
         fill(0, 0, 0);
         rect(1000, 200, 100, 80);
@@ -157,35 +146,29 @@ class OHQueue {
         textAlign(CENTER, CENTER);
         textSize(16);
         text('left', 1000, 200, 100, 80);
-        for (let i = 0; i < this.unservicedStudents.length; i += 1) {
-            let student = this.unservicedStudents[i];
-            student.show(1050, 250 + 80 * (i + 1));
-        }
+
+        // show all unserviced students
+        this.unservicedStudents.map((student, i) => student.show(1050, 250 + 80 * (i + 1)));
     };
 
     removeStudent = (s) => {
-        console.log("before removal " + this.students.length);
         this.students = this.students.filter((x) => x.studentNum !== s.studentNum);
-        console.log("after removal " + this.students.length);
     };
 
     addStudent = (s) => {
-        console.log("Student " + s + " has been added to queue of length " + this.students.length);
         s.assignStatus(Student.WAITING);
-        this.students = this.students.concat(s);
+        this.students.push(s);
     };
 
     assignStudentToTA = (s, t) => {
-        console.log("Student " + s + " has been assigned to TA " + t);
         s.assignStatus(Student.BEING_SERVED);
         t.addProgressStudent(s);
     };
 
     completeStudent = (s) => {
         if (s.status === Student.UNSERVICED) {
-            this.unservicedStudents = this.unservicedStudents.concat(s);
+            this.unservicedStudents.push(s);
         } else {
-            console.log("Student " + s + " has been completed");
             s.assignStatus(Student.DONE);
         }
     };
@@ -198,12 +181,10 @@ class TA {
     };
 
     addProgressStudent = (s) => {
-        console.log("Student " + s + " is being added to TA " + this);
-        this.progressStudents = this.progressStudents.concat(s);
+        this.progressStudents.push(s);
     };
 
     show = (x, y) => {
-        console.log("Showing TA " + this);
         // display the TA
         fill(0, 0, 0);
         ellipse(x, y, 60, 60);
@@ -213,11 +194,6 @@ class TA {
         text("TA " + this.taNum.toString(), x - 15, y - 20, 40, 40);
 
         // display all students
-        console.log("TA " + this + "'s students " + this.progressStudents.length);
-        for (let i = 0; i < this.progressStudents.length; i += 1) {
-            let student = this.progressStudents[i];
-            console.log("Showing student " + student + " of TA " + this);
-            student.show(x, y + 80 * (i + 1));
-        }
+        this.progressStudents.map((student, i) => student.show(x, y + 80 * (i + 1)));
     };
 }

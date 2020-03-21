@@ -10,7 +10,7 @@ let simulate = (numTas, mean_inter_arrival_time, alphas, lambdas) => {
 
     while (T < 840) {
         T = T - mean_inter_arrival_time * Math.log(Math.random());
-        arrival_times = arrival_times.concat(T);
+        arrival_times.push(T);
 
         let nFree = -1;
         for (let i = 0; i < A.length; i += 1) {
@@ -30,51 +30,32 @@ let simulate = (numTas, mean_inter_arrival_time, alphas, lambdas) => {
             }
 
             if (A[u] - T > 30) {
-                start_times = start_times.concat(T + 15);
-                finish_times = finish_times.concat(T + 15);
+                start_times.push(T + 15);
+                finish_times.push(T + 15);
                 u = -1;
             } else {
-                start_times = start_times.concat(A[u]);
+                start_times.push(A[u]);
             }
         } else {
             u = nFree;
             while (A[u] > T) {
-                // u = Math.floor(Math.random() * numTas);
                 u = (u + 1) % numTas;
-                console.log("u value: " + u);
             }
-            console.log("Chosen server is: " + u);
-            start_times = start_times.concat(T);
+            start_times.push(T);
         }
 
-        assigned_servers = assigned_servers.concat(u);
+        assigned_servers.push(u);
 
         if (u >= 0) {
-            const reducer = (accumulator, currentValue) => accumulator + currentValue;
-            let S = sum_array(create_random_array(alphas[u]).map((x) => Math.log(x) * -1.0 / lambdas[u]));
-            finish_times = finish_times.concat(start_times[job_num] + S);
+            let rand_arr = new Array(alphas[u]).fill(Math.random());
+            let arr_adj = rand_arr.map((x) => Math.log(x) * -1.0 / lambdas[u]);
+            let S = arr_adj.reduce((a, b) => a + b, 0);
+            finish_times.push(start_times[job_num] + S);
             A[u] = start_times[job_num] + S;
         }
         job_num = job_num + 1;
     }
     return {numTas : numTas, arrival_times : arrival_times, start_times : start_times, finish_times : finish_times, assigned_servers : assigned_servers};
-    //console.log(Array.from(Array(job_num).keys()), arrival_times, start_times, finish_times, assigned_servers);
-};
-
-let create_random_array = (num) => {
-    let arr = [];
-    for (let i = 0; i < num; i += 1) {
-        arr = arr.concat(Math.random());
-    }
-    return arr;
-};
-
-let sum_array = (arr) => {
-    let sum = 0;
-    for (let i = 0; i < arr.length; i += 1) {
-        sum += arr[i];
-    }
-    return sum;
 };
 
 exports.simulate = simulate;

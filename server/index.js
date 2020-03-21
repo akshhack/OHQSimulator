@@ -8,15 +8,13 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    res.send("Hello World");
+    res.send("OHQ Simulator");
 });
 
 let data = null;
 
 app.post('/doSimulation', (req,res) => {
-    console.log(req.body);
     data = simulator.simulate(req.body.numTas, req.body.mean_arrival_time, req.body.alphas, req.body.lambdas);
-    console.log(data);
     res.send("completed");
 });
 
