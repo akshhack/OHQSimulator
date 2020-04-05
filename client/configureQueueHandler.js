@@ -35,8 +35,11 @@ function createTAFields(numTas) {
 document.getElementById("form").addEventListener("submit", (event) => {
     event.preventDefault();
     let numTas = Number(document.getElementById("num_tas").value);
+    let simTAG = Number(document.getElementById("simTag").value);
     let form = new FormData(document.getElementById("form"));
     let myBody = {};
+    // Update this to allow for a simulation ID
+    myBody["simTag"] = simTAG; // Ensure nonNull and nonEmpty
     myBody["numTas"] = numTas;
     myBody["mean_arrival_time"] = Number(form.get("inter_arrival_time"));
     let alphas = [];

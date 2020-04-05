@@ -23,12 +23,19 @@ let data = null; // This variable needs to be converted into a database stored l
 // Add a field to do simulation request
 // 
 
-app.post('/doSimulation', (req,res) => {
+app.post('/doSimulation', (req,res) => { // Data variable is populated
     data = simulator.simulate(req.body.numTas, req.body.mean_arrival_time, req.body.alphas, req.body.lambdas);
+    // data.numTas
+    // data.arrival_times
+    // data.start_times
+    // data.finish_times
+    // data.assigned_servers
+    // req.body.simTag
+
     res.send("completed");
 });
 
-app.get('/getSimulationData', (req, res) => {
+app.get('/getSimulationData', (req, res) => { // request should have a <tag> param to specify what simulation to get 
     if (data !== null) {
         res.end(JSON.stringify(data));
     } else {
